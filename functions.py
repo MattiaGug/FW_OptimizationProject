@@ -2,7 +2,7 @@ import numpy as np
 from scipy.sparse import csr_matrix, issparse
 from scipy.linalg import norm
 
-def f_loss(R: np.ndarray, P: np.ndarray) -> float:
+def function_loss(R: np.ndarray, P: np.ndarray) -> float:
     '''
     Computes the Root Mean Squared Error (RMSE) between the non-zero elements
     of R and the corresponding elements in P.
@@ -12,7 +12,7 @@ def f_loss(R: np.ndarray, P: np.ndarray) -> float:
     - P: The predicted matrix.
 
     Returns:
-    - The Root Mean Squared Error between R and P entries (RMSE).
+    - The MSE (actual matrix - predicted one)^2.
     '''
     # Find the indices of known ratings (non-zero in R)
     known_indices = R.nonzero()
@@ -24,21 +24,20 @@ def f_loss(R: np.ndarray, P: np.ndarray) -> float:
     # Calculating the Squared Error
     squared_error = np.square(R_known - P_predicted)
     
-    # Calculating Mean Squared Error (MSE)
+    # MSE
     N = len(R_known)
     if N == 0:
         return 0.0 # Avoiding division by zero if R is all zeros
-        
+    
     mse = np.sum(squared_error) / N
     
-    # Returning Root Mean Squared Error (RMSE)
-    return np.sqrt(mse)
+    # Returning Mean Squared Error
+    return mse 
 
 def gradient(R: np.ndarray, P: np.ndarray) -> np.ndarray:
     '''
     Computes the gradient of the loss
-    with respect to the matrix P. This is a common and simplified proxy for 
-    the RMSE gradient in iterative algorithms.
+    with respect to the matrix P.
 
     Parameters:
     - R: The original matrix.
@@ -84,6 +83,7 @@ def gamma_line_search(R: np.ndarray, P: np.ndarray, D: csr_matrix,
     # Iterative Line Search (Starting from the second point)
     for gamma in gammas[1:]: 
         
+        print("Testing gamma:", gamma)
         # Calculate P_new efficiently in the sparse domain
         P_new_csr = P_csr + gamma * D
         
@@ -92,7 +92,50 @@ def gamma_line_search(R: np.ndarray, P: np.ndarray, D: csr_matrix,
         
         # Updating Best Result
         if gamma_loss < best_loss:
+            print("Better gamma loss found:", gamma_loss, "Old gamma loss was: ")
             best_loss = gamma_loss
             best_gamma = gamma
-            
+    print(best_gamma)   
     return best_gamma
+
+
+
+'''
+Definition of Armijo Rule for gamma search -> less computational cost 
+'''
+def armijoRule(R: np.ndarray, P: np.ndarray, f_loss, 
+               gradient, gamma_max: float = 1.0) -> float:
+    
+    # --- ConstantsArmijo ---
+    alpha = gamma_max  
+    min_alpha = 1e-10  
+    sigma = 1e-4        
+    beta = 0.5        
+
+    # --- Pre-calculation ---
+    current_loss = f_loss(R, P)
+    grad = gradient(R, P)
+    
+    # Since Direction D = -grad, the slope is: grad dot -grad = -||grad||^2 (FROBENIUS NORM)
+    grad_norm_sq = np.sum(np.square(grad))
+    
+    # --- Backtracking Loop ---
+    while True:
+        # Update Rule: Steepest Descent (P - alpha * grad)
+        P_test = P - alpha * grad
+        
+        # New loss at the test point
+        new_loss = f_loss(R, P_test)
+        
+        # Armijo Condition:
+        target_loss = current_loss - sigma * alpha * grad_norm_sq
+        
+        if new_loss <= target_loss:
+            return alpha
+            
+        # Shrink step size
+        alpha *= beta
+        
+        # Safety break to prevent infinite loops
+        if alpha < min_alpha:
+            return 0.0
