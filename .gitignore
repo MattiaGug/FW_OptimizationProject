@@ -1,0 +1,7 @@
+
+# Data
+processed_netflix_data.csv
+ml-latest-small
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
