@@ -5,3 +5,6 @@ ml-latest-small
 
 # Jupyter checkpoints
 .ipynb_checkpoints/
+
+#folder
+ml-latest-small
