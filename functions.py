@@ -109,7 +109,7 @@ def FW_standard(R: np.ndarray, delta: float, max_iter: int = 200,
     m, n = R.shape
     
     if init_with_lmo:
-        # Stessa inizializzazione del Pairwise
+        # Same initialization as Pairwise
         initial_grad = gradient(R, np.zeros((m, n)))
         P = LMO(initial_grad, delta)
     else:
@@ -170,7 +170,7 @@ def FW_pairwise(R: np.ndarray, delta: float, max_iter: int = 500,
     '''
     m, n = R.shape
     
-    # FIX 1: Initialize with a proper atom from LMO (not zeros!)
+    # Initializing with a proper atom from LMO (not zeros)
     initial_grad = gradient(R, np.zeros((m, n)))
     S_init = LMO(initial_grad, delta)
     
@@ -185,30 +185,30 @@ def FW_pairwise(R: np.ndarray, delta: float, max_iter: int = 500,
     for k in range(1, max_iter + 1):
         G = gradient(R, P)
         
-        # 1. Forward step: find best vertex via LMO
+        # Forward step: find best vertex via LMO
         S_fw = LMO(G, delta)
         gap_fw = np.sum(G * (P - S_fw))
         
-        # 2. Away step: find worst atom in active set
+        # Away step: find worst atom in active set
         dot_products = [np.sum(G * atom) for atom in S_atoms]
         id_away = np.argmax(dot_products)
         S_away = S_atoms[id_away]
         lambda_away = lambdas[id_away]
         
-        # 3. Pairwise direction
+        # Pairwise direction
         d_pairwise = S_fw - S_away
         
-        # 4. Duality gap (use FW gap for stopping)
+        # 4. Duality gap
         gap = gap_fw
         gaps.append(gap)
         
         if gap < tol:
             break
         
-        # 5. Maximum step size (can't exceed lambda_away)
+        # Maximum step size (can't exceed lambda_away)
         gamma_max = lambda_away
         
-        # 6. FIX 2: Correct line search for MSE on observed entries
+      
         known_indices = R.nonzero()
         R_obs = R[known_indices]
         P_obs = P[known_indices]
@@ -223,7 +223,6 @@ def FW_pairwise(R: np.ndarray, delta: float, max_iter: int = 500,
             gamma = min(2.0 / (k + 2), gamma_max)
         
         # 7. Update active set
-        # FIX 3: Better atom comparison using correlation
         s_fw_index = -1
         norm_fw = np.linalg.norm(S_fw, 'fro')
         for i, atom in enumerate(S_atoms):
@@ -281,7 +280,7 @@ def FW_line_search(R: np.ndarray, delta: float, max_iter: int = 200,
         if gap < tol:
             break
         
-        # QUESTA È LA PARTE CRITICA - line search corretto
+       #linesearch
         known_indices = R.nonzero()
         R_obs = R[known_indices]
         P_obs = P[known_indices]
