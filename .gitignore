@@ -3,6 +3,7 @@
 processed_netflix_data.csv
 ml-latest-small/
 combined_data_1.txt
+ratings.csv
 
 
 # Jupyter checkpoints
