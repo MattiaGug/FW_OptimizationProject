@@ -108,11 +108,10 @@ Examples of usage and experiments are available in the `notebooks/` folder. Each
 
 ## Roadmap
 
-* [ ] Base Frank-Wolfe implementation
-* [ ] Line search strategies
-* [ ] Away-step Frank-Wolfe
-* [ ] Convergence analysis
-* [ ] Comparison with gradient descent
+* [X] Base Frank-Wolfe implementation
+* [X] Line search strategies
+* [X] Away-step Frank-Wolfe
+* [X] Convergence analysis
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
