@@ -14,7 +14,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/MattiaGug/FW_OptimizationProject">
-    <img src="https://raw.githubusercontent.com/MattiaGug/FW_OptimizationProject/main/assets/logo.png" width="300" height="300">
+    <img src="https://github.com/MattiaGug/FW_OptimizationProject/blob/main/logo.png" width="300" height="300">
   </a>
 
 <h3 align="center">FW Optimization Project</h3>
