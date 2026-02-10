@@ -58,7 +58,7 @@ def FW_standard(R: np.ndarray, delta: float, max_iter: int = 200,
                 tol: float = 1e-6, init_type: str = 'zeros',
                 init_with_lmo: bool = False, verbose: bool = False) -> tuple:
     '''
-    Standard Frank-Wolfe algorithm with classic step size gamma = 2/(k+2).
+    Standard Frank-Wolfe algorithm with classic step size gamma = 2/(k+1).
     '''
     m, n = R.shape
 
@@ -84,7 +84,7 @@ def FW_standard(R: np.ndarray, delta: float, max_iter: int = 200,
                 print(f"Converged at iteration {k} (gap={gap:.2e})")
             break
 
-        gamma = 2.0 / (k + 2)
+        gamma = 2.0 / (k + 1)
 
         P = P + gamma * D
 
