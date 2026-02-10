@@ -151,13 +151,8 @@ def FW_pairwise(R: np.ndarray, delta: float, max_iter: int = 500,
     '''
     Pairwise Frank-Wolfe per Matrix Completion.
     Mantiene una decomposizione esplicita P = sum(alpha_i * S_i).
-    
-    Versione corretta:
-    - Segno giusto nella line-search
-    - No normalizzazione lambda → vincolo rispettato
-    - Check similarità per evitare duplicati atomi
-    - Stampa ||P||_* per monitorare vincolo
-    - Fallback gamma minimo se denominator piccolo
+    Ogni iterazione sceglie un atomo S_fw (forward) e uno S_away (tra quelli attivi)
+    e aggiorna P lungo la direzione D = S_fw - S_away con line search specifica per MSE. 
     '''
     m, n = R.shape
 
