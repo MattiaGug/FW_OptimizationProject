@@ -135,7 +135,7 @@ def FW_line_search(R: np.ndarray, delta: float, max_iter: int = 200,
         if denominator > 1e-12:
             gamma = np.clip(numerator / denominator, 0.0, 1.0)
         else:
-            gamma = 2.0 / (k + 2)
+            gamma = 2.0 / (k + 1)  # fallback step size 
 
         P = P + gamma * D
 
